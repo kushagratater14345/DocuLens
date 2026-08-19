@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+data/db/
+data/screenshots/*
+data/reports/*
+data/watch_inbox/*
+.env

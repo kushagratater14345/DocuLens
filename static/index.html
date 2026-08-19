@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DocuLens AI — Document Intelligence</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-mark">DL</span>
+      <span class="brand-name">DocuLens <span class="accent">AI</span></span>
+    </div>
+    <div class="status-pill" id="statusPill">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">Checking engine…</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero">
+    <h1>Intelligent Document Analysis</h1>
+    <p>Upload documents and let DocuLens extract, understand and analyze them — OCR, classification, semantic search and risk detection, all running locally.</p>
+  </section>
+
+  <section class="pipeline">
+    <div class="pipeline-step">UPLOAD</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">OCR</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">UNDERSTAND</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">EXTRACT</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">VERIFY</div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">SEARCH</div>
+  </section>
+
+  <section class="grid-2">
+
+    <div class="card upload-card">
+      <h2>Upload a document</h2>
+      <p class="muted">PNG, JPG, JPEG or PDF</p>
+
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.pdf" hidden />
+        <div class="dropzone-inner">
+          <div class="dropzone-icon">⬆</div>
+          <div class="dropzone-text">Drag &amp; drop or click to choose a file</div>
+          <button type="button" class="btn btn-primary" id="chooseBtn">Choose Document</button>
+        </div>
+      </label>
+
+      <div class="progress-box" id="progressBox" style="display:none;">
+        <div class="progress-step" id="progressStep">Uploading…</div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="error-box" id="uploadError" style="display:none;"></div>
+    </div>
+
+    <div class="card stats-card">
+      <div class="card-header-row">
+        <h2>Analytics</h2>
+        <div class="export-buttons">
+          <a class="btn btn-ghost" href="/export/excel" title="Download Excel report">⬇ Excel</a>
+          <a class="btn btn-ghost" href="/export/pdf" title="Download PDF report">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-label">Documents</div>
+          <div class="stat-value" id="statDocs">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total Spending</div>
+          <div class="stat-value" id="statSpending">₹0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total GST</div>
+          <div class="stat-value" id="statGst">₹0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">High Risk</div>
+          <div class="stat-value risk-high" id="statRisk">0</div>
+        </div>
+      </div>
+
+      <h3>By Document Type</h3>
+      <div class="distribution" id="typeDistribution"></div>
+
+      <h3>By Category</h3>
+      <div class="distribution" id="categoryDistribution"></div>
+    </div>
+
+  </section>
+
+  <section class="card">
+    <h2>Spending Trend</h2>
+    <p class="muted">Total amount extracted per day, across all uploaded documents.</p>
+    <div id="trendChart" class="trend-chart"></div>
+  </section>
+
+  <section class="card result-card" id="resultCard" style="display:none;">
+    <h2>Document Analysis</h2>
+    <div class="result-grid" id="resultGrid"></div>
+
+    <h3>AI Insights</h3>
+    <ul class="insights-list" id="insightsList"></ul>
+
+    <h3>Why this score? <span class="muted small">(explainability)</span></h3>
+    <div class="explain-box" id="explainBox"></div>
+
+    <div id="relatedSection" style="display:none;">
+      <h3>Related Documents</h3>
+      <div class="related-list" id="relatedList"></div>
+    </div>
+
+    <h3>Extracted Text</h3>
+    <pre class="extracted-text" id="extractedText"></pre>
+  </section>
+
+  <section class="card">
+    <h2>💬 Ask DocuLens</h2>
+    <p class="muted">Ask a question in plain English about everything you've uploaded so far.</p>
+    <div class="search-row">
+      <input type="text" id="askInput" placeholder='Try: "How much did I spend on Amazon?"' />
+      <button class="btn btn-primary" id="askBtn">Ask</button>
+    </div>
+    <div class="ask-answer" id="askAnswer" style="display:none;"></div>
+  </section>
+
+  <section class="card">
+    <h2>🔎 Search Your Documents</h2>
+    <div class="search-row">
+      <input type="text" id="searchInput" placeholder='Try: "invoices from Amazon" or "expensive purchases"' />
+      <button class="btn btn-icon" id="voiceBtn" title="Search by voice">🎤</button>
+      <button class="btn btn-primary" id="searchBtn">Search</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </section>
+
+  <section class="card">
+    <h2>Your Documents</h2>
+    <div class="history-list" id="historyList">
+      <p class="muted">No documents yet. Upload one to get started.</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="modal-backdrop" id="modalBackdrop" style="display:none;">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
